@@ -1,0 +1,133 @@
+<phone:PhoneApplicationPage 
+    x:Class="WPAppStudio.View.LatestPosts_News"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:ctl="clr-namespace:WPAppStudio.Controls"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:mytoolkit="clr-namespace:MyToolkit.Controls;assembly=MyToolkit.Extended"
+	xmlns:mytoolkitpaging="clr-namespace:MyToolkit.Paging;assembly=MyToolkit.Extended"
+	xmlns:helpers="clr-namespace:WPAppStudio.Helpers"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource CustomApplicationTextBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+	DataContext="{Binding Path=LatestPosts_NewsViewModel, Source={StaticResource ViewModelLocator}}">
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardIn"/>
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardIn"/>
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:TurnstileTransition Mode="BackwardOut"/>
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:TurnstileTransition Mode="ForwardOut"/>
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
+    <phone:PhoneApplicationPage.Resources>
+        
+		<mytoolkitpaging:BindableApplicationBar x:Key="PanoramaLatestPosts_News0AppBar" IsVisible="True" IsMenuEnabled="True" Mode="Minimized" BackgroundColor="{StaticResource CustomApplicationAppBarBackgroundBrush}" Opacity="0.99" ForegroundColor="Black">
+			<mytoolkitpaging:BindableApplicationBarIconButton x:Name="PanoramaLatestPosts_News0RefreshBtn" IconUri="/Images/Icons/Light/Refresh.png" Text="{Binding Path=LocalizedResources.Refresh, Source={StaticResource LocalizedStrings}}" Command="{Binding RefreshLatestPosts_NewsListControlCollection}"/>
+			<mytoolkitpaging:BindableApplicationBarIconButton x:Name="PanoramaLatestPosts_News0SetLockScreenBtn" IconUri="/Images/Icons/Light/SetLockScreen.png" Text="{Binding Path=LocalizedResources.SetLockScreen, Source={StaticResource LocalizedStrings}}" Command="{Binding SetLockScreenCommand}"/>
+	
+		</mytoolkitpaging:BindableApplicationBar>	
+        <ctl:MenuData x:Key="MenuSection_MenuMenuControlData">
+            <ctl:MenuItemData Title="Twitter" TargetUrl="https://twitter.com/windowsvj" Image="/Images/Item-cf31272a-a55f-45df-bf7e-54bd9340b16a.png"/>
+            <ctl:MenuItemData Title="Facebook" TargetUrl="https://www.facebook.com/WindowsVJ" Image="/Images/Item-1b9f5f17-9171-4dd9-ad2c-f2709848a277.png"/>
+            <ctl:MenuItemData Title="LinkedIn" TargetUrl="http://www.linkedin.com/company/windowsvj-com" Image="/Images/Item-3a5999c9-f21c-423b-b016-65f16eb8e06f.png"/>
+            <ctl:MenuItemData Title="Windows 8 App" TargetUrl="http://apps.microsoft.com/windows/en-us/app/windowsvj-blog-feeds/10eb3138-882d-413a-8b42-a35a3373b201" Image="/Images/Item-3b2b7f49-80a7-4179-bf0d-c251fab41c38.jpg"/>
+       
+        </ctl:MenuData>
+    </phone:PhoneApplicationPage.Resources>
+    <Grid x:Name="LayoutRoot">
+        <phone:Panorama x:Name="PanoramaLatestPosts_News" Foreground="{StaticResource CustomApplicationTextBrush}" Background="{StaticResource CustomApplicationBackgroundImage}" SelectionChanged="panoramaLatestPosts_News_SelectionChanged">
+		    <phone:Panorama.Title>
+				<StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+					<Image Height="85" Width="85" Source="..\Images\Logo-4ef38213-beeb-4b1f-9ea1-5a30d80ef3d6.png" Stretch="Uniform" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,10,5" RenderTransformOrigin="0.5,0.5" />
+					<TextBlock FontSize="92" Text="WindowsVJ Feeds" FontFamily="Segoe WP Light" Foreground="{StaticResource CustomTitleApplicationTextBrush}" VerticalAlignment="Stretch"/>
+                </StackPanel>
+            </phone:Panorama.Title>
+			<phone:PanoramaItem x:Name="PanoramaLatestPosts_News0" Margin="0,0,0,25">
+				<phone:PanoramaItem.Header>
+					<StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+						<TextBlock Text="Recent Posts" Foreground="{StaticResource CustomApplicationTextBrush}"/>
+					</StackPanel>
+				</phone:PanoramaItem.Header>
+			<Grid>
+				<ProgressBar IsIndeterminate="True" Visibility="{Binding LoadingLatestPosts_NewsListControlCollection, Converter={StaticResource VisibilityConverter}}" />
+				<ctl:LongListSelector x:Name="LatestPosts_NewsListControl" 
+					ItemsSource="{Binding LatestPosts_NewsListControlCollection}"
+					SelectedItem="{Binding SelectedLatestPosts_NewsListControlCollection, Mode=TwoWay}"
+					PagingEnabled="False"
+					RefreshCommand="{Binding RefreshLatestPosts_NewsListControlCollection}">
+                    <ctl:LongListSelector.ItemTemplate>
+                        <DataTemplate>
+							<Grid Margin="5" toolkit:TiltEffect.IsTiltEnabled="True">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="105"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition MaxHeight="80"/>
+									<RowDefinition MaxHeight="80"/>
+								</Grid.RowDefinitions>
+								<Image Source="{Binding ImageUrl, TargetNullValue={StaticResource DefaultNoImageValue}}" Stretch="UniformToFill" Width="100" MaxHeight="100" Margin="5,10,0,5" Grid.RowSpan="2"/>
+								<TextBlock FontSize="32" Foreground="{StaticResource CustomApplicationTextBrush}" 
+											Text="{Binding Title, Converter={StaticResource SanitizeString}}" Margin="10,0" Grid.Column="1" Grid.Row="0"/>
+								<TextBlock TextWrapping="Wrap" FontSize="18" Foreground="{StaticResource CustomApplicationTextBrush}"
+										TextTrimming="WordEllipsis" Text="{Binding Summary, Converter={StaticResource SanitizeString}}" Margin="10,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" Height="75"/>
+								<TextBlock TextWrapping="Wrap" FontSize="18" Foreground="{StaticResource CustomApplicationTextBrush}"
+										TextTrimming="WordEllipsis" Text="{Binding PublishDate, Converter={StaticResource ShortDateConverter}}" Margin="10,0" Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Top" Height="75"/>
+							</Grid>
+                        </DataTemplate>
+                    </ctl:LongListSelector.ItemTemplate>
+                </ctl:LongListSelector>
+			</Grid>
+            </phone:PanoramaItem>
+			<phone:PanoramaItem x:Name="PanoramaLatestPosts_News1" >
+				<phone:PanoramaItem.Header>
+					<StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+						<TextBlock Text="MenuSection" Foreground="{StaticResource CustomApplicationTextBrush}"/>
+					</StackPanel>
+				</phone:PanoramaItem.Header>
+				<ListBox x:Name="MenuSection_MenuMenuControl" 
+					ItemsSource="{StaticResource MenuSection_MenuMenuControlData}"
+					SelectedItem="{Binding SelectedMenuSection_MenuMenuControl, Mode=TwoWay}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+							<VirtualizingStackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+						<Grid Margin="5" toolkit:TiltEffect.IsTiltEnabled="True">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="60"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+								<Image Source="{Binding Image}" Margin="5,0,0,5" Stretch="UniformToFill" />
+								<TextBlock Margin="10,0" FontSize="32" Foreground="{StaticResource CustomApplicationTextBrush}" 
+											VerticalAlignment="Center" Text="{Binding Title}" Grid.Column="1"/>
+						</Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </phone:PanoramaItem>
+        </phone:Panorama>
+    </Grid>
+	
+</phone:PhoneApplicationPage>
